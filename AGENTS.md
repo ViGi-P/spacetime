@@ -80,7 +80,7 @@ spacetime.fromUnixSeconds(1489520157)      // SECONDS epoch -> Spacetime
 spacetime('12/01/2018', null, { dmy: true })  // dd/mm/yyyy parsing (default is mm/dd US)
 spacetime(123456, 'UTC', { silent: false })   // warn on suspicious 1970 epochs (default silent: true)
 spacetime('June 5th', null, { today: { year: 1996, month: 3, date: 4 } }) // pin the "now" context
-spacetime('...', tz, { weekStart: 1 })        // 0=Sunday (default), 1=Monday, ...
+spacetime('...', tz, { weekStart: 1 })        // day the week starts on: 0=Sunday, 1=Monday (default), ...
 ```
 
 Ambiguous string inputs assume: start of month (`'June 1992'` → the 1st),
