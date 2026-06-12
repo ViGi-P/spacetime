@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('string-parse', (t) => {
+test('string-parse', () => {
   const today = {
     year: 2012,
     month: 2,
@@ -55,7 +56,6 @@ test('string-parse', (t) => {
   arr.forEach((a) => {
     const left = spacetime(a[0], null, { today })
     const right = spacetime(a[1], null, { today })
-    t.equal(left.iso(), right.iso(), a[0])
+    assert.equal(left.iso(), right.iso(), a[0])
   })
-  t.end()
 })

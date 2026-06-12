@@ -1,11 +1,12 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('since()', (t) => {
+test('since()', () => {
   const a = spacetime('November 11, 1999 11:11:11', 'Canada/Eastern')
   const b = spacetime('December 12, 2000 12:12:12', 'Canada/Eastern')
 
-  t.deepEqual(
+  assert.deepEqual(
     b.since(a),
     {
       diff: {
@@ -26,7 +27,7 @@ test('since()', (t) => {
     'simple-ago'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(b),
     {
       diff: {
@@ -47,7 +48,7 @@ test('since()', (t) => {
     'simple-in'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(a),
     {
       diff: {
@@ -73,7 +74,7 @@ test('since()', (t) => {
   const yearAndASecond = a.clone().add(1, 'year').add(1, 'second')
   const twoSeconds = a.clone().add(2, 'seconds')
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(almostTwoYears),
     {
       diff: {
@@ -94,7 +95,7 @@ test('since()', (t) => {
     'almost'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(overTwoMonths),
     {
       diff: {
@@ -115,7 +116,7 @@ test('since()', (t) => {
     'over'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(yearAndASecond),
     {
       diff: {
@@ -136,7 +137,7 @@ test('since()', (t) => {
     'precise'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     a.since(twoSeconds),
     {
       diff: {
@@ -157,68 +158,64 @@ test('since()', (t) => {
     'seconds'
   )
 
-  t.end()
 })
 
-test('since now - default', (t) => {
+test('since now - default', () => {
   const past = spacetime.now().subtract(23, 'months').subtract(23, 'seconds')
   const since = past.since()
-  t.equal(since.diff.years, -1, '1 year back')
-  t.equal(since.diff.months, -11, '11 months back')
-  t.equal(since.diff.seconds, -23, '23 seconds back')
-  t.equal(since.precise, 'in 1 year, 11 months', 'precise is good')
-  t.deepEqual(since.abbreviated, ['1y', '11m', '23s'], 'abbreviated is good')
-  t.end()
+  assert.equal(since.diff.years, -1, '1 year back')
+  assert.equal(since.diff.months, -11, '11 months back')
+  assert.equal(since.diff.seconds, -23, '23 seconds back')
+  assert.equal(since.precise, 'in 1 year, 11 months', 'precise is good')
+  assert.deepEqual(since.abbreviated, ['1y', '11m', '23s'], 'abbreviated is good')
 })
 
-test('supports soft inputs', (t) => {
+test('supports soft inputs', () => {
   const now = spacetime([2019, 3, 12])
   const c = spacetime('dec 25 2018')
   let obj = now.since(c).diff
-  t.equal(obj.months, 3, 'christmas was 3 months ago')
+  assert.equal(obj.months, 3, 'christmas was 3 months ago')
 
   obj = spacetime('christmas').diff('new years')
-  t.equal(obj.days, 6, '6 days between christmas and new years')
+  assert.equal(obj.days, 6, '6 days between christmas and new years')
 
   obj = spacetime('April 12th 2018').since('April 10th 2018')
-  t.equal(obj.rounded, '2 days ago', 'rounded')
-  t.equal(obj.qualified, '2 days ago', 'qualified')
-  t.equal(obj.precise, '2 days ago', 'precise')
+  assert.equal(obj.rounded, '2 days ago', 'rounded')
+  assert.equal(obj.qualified, '2 days ago', 'qualified')
+  assert.equal(obj.precise, '2 days ago', 'precise')
   let diff = obj.diff
-  t.equal(diff.years, 0, '0 years')
-  t.equal(diff.months, 0, '0 months')
-  t.equal(diff.days, 2, '2 days')
-  t.equal(diff.hours, 0, '0 hours')
-  t.equal(diff.seconds, 0, '0 seconds')
-  t.deepEqual(obj.abbreviated, ['2d'], 'abbreviated')
+  assert.equal(diff.years, 0, '0 years')
+  assert.equal(diff.months, 0, '0 months')
+  assert.equal(diff.days, 2, '2 days')
+  assert.equal(diff.hours, 0, '0 hours')
+  assert.equal(diff.seconds, 0, '0 seconds')
+  assert.deepEqual(obj.abbreviated, ['2d'], 'abbreviated')
 
   //opposite since logic
   obj = spacetime('April 8th 2018').since('April 10th 2018')
-  t.equal(obj.rounded, 'in 2 days', 'rounded')
-  t.equal(obj.qualified, 'in 2 days', 'qualified')
-  t.equal(obj.precise, 'in 2 days', 'precise')
+  assert.equal(obj.rounded, 'in 2 days', 'rounded')
+  assert.equal(obj.qualified, 'in 2 days', 'qualified')
+  assert.equal(obj.precise, 'in 2 days', 'precise')
   diff = obj.diff
-  t.equal(diff.years, 0, '0 years')
-  t.equal(diff.months, 0, '0 months')
-  t.equal(diff.days, -2, '2 days')
-  t.equal(diff.hours, 0, '0 hours')
-  t.equal(diff.seconds, 0, '0 seconds')
-  t.deepEqual(obj.abbreviated, ['2d'], 'abbreviated')
+  assert.equal(diff.years, 0, '0 years')
+  assert.equal(diff.months, 0, '0 months')
+  assert.equal(diff.days, -2, '2 days')
+  assert.equal(diff.hours, 0, '0 hours')
+  assert.equal(diff.seconds, 0, '0 seconds')
+  assert.deepEqual(obj.abbreviated, ['2d'], 'abbreviated')
 
-  t.end()
 })
 
-test('from + fromNow aliases', (t) => {
+test('from + fromNow aliases', () => {
   const obj = spacetime('April 12th 2008', 'Canada/Pacific').from('March 12 2018')
-  t.equal(obj.qualified, 'almost 10 years ago', 'qualified')
-  t.equal(obj.precise, '9 years, 11 months ago', 'precise')
-  t.end()
+  assert.equal(obj.qualified, 'almost 10 years ago', 'qualified')
+  assert.equal(obj.precise, '9 years, 11 months ago', 'precise')
 })
 
-test('since calculation involves month addition and subtraction', (t) => {
+test('since calculation involves month addition and subtraction', () => {
   let prev = spacetime('2019-01-31T23:00:50.0Z')
   let now = spacetime('2019-02-01T10:00:00.0Z')
-  t.deepEqual(now.since(prev), {
+  assert.deepEqual(now.since(prev), {
     diff: {
       years: 0,
       months: 0,
@@ -238,7 +235,7 @@ test('since calculation involves month addition and subtraction', (t) => {
   prev = spacetime('2019-08-31T12:00:00.0Z')
   now = spacetime('2019-09-01T11:00:00.0Z')
 
-  t.deepEqual(now.since(prev), {
+  assert.deepEqual(now.since(prev), {
     diff: {
       years: 0,
       months: 0,
@@ -255,10 +252,9 @@ test('since calculation involves month addition and subtraction', (t) => {
     direction: 'past'
   })
 
-  t.end()
 })
 
-test('i18n, past and future', (t) => {
+test('i18n, past and future', () => {
     const start = spacetime("Dec 25th 2021");
     const end = start
         .add(1, 'minute')
@@ -297,7 +293,7 @@ test('i18n, past and future', (t) => {
     end.i18n(translationValues);
 
 
-    t.deepEqual(end.since(start), {
+    assert.deepEqual(end.since(start), {
         diff: { days: 1, hours: 3, minutes: 1, months: 0, seconds: 2, years: 0 },
         precise: "hace 1 dia, 3 horas",
         qualified: "hace 1 dia",
@@ -307,7 +303,7 @@ test('i18n, past and future', (t) => {
         direction: 'pasado'
     })
 
-    t.deepEqual(start.since(end), {
+    assert.deepEqual(start.since(end), {
         diff: { days: -1, hours: -3, minutes: -1, months: 0, seconds: -2, years: 0 },
         precise: "en 1 dia, 3 horas",
         qualified: "en 1 dia",
@@ -317,10 +313,9 @@ test('i18n, past and future', (t) => {
         direction: 'futuro'
     })
 
-    t.end()
 })
 
-test('i18n, almost and over', (t) => {
+test('i18n, almost and over', () => {
     const start = spacetime("Dec 25th 2021");
     const almost21Days = start
         .add(23, 'hours')
@@ -362,14 +357,13 @@ test('i18n, almost and over', (t) => {
     almost1Hour.i18n(translationValues)
     overTwoMonths.i18n(translationValues)
 
-    t.deepEqual(start.since(almost21Days).qualified, "en casi 21 dias")
-    t.deepEqual(almost1Hour.since(start).qualified, "hace casi 6 horas")
-    t.deepEqual(start.since(overTwoMonths).qualified, "en algo más de 2 meses" )
+    assert.deepEqual(start.since(almost21Days).qualified, "en casi 21 dias")
+    assert.deepEqual(almost1Hour.since(start).qualified, "hace casi 6 horas")
+    assert.deepEqual(start.since(overTwoMonths).qualified, "en algo más de 2 meses" )
 
-    t.end()
 })
 
-test('i18n, now', (t) => {
+test('i18n, now', () => {
     const start = spacetime("Dec 25th 2021");
     const end = spacetime("Dec 25th 2021");
 
@@ -403,7 +397,7 @@ test('i18n, now', (t) => {
     start.i18n(translationValues);
     end.i18n(translationValues)
 
-    t.deepEqual(start.since(end), {
+    assert.deepEqual(start.since(end), {
         diff: {
             years: 0,
             months: 0,
@@ -420,5 +414,4 @@ test('i18n, now', (t) => {
         direction: 'presente'
     })
 
-    t.end()
 })

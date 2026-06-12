@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('random november time', (t) => {
+test('random november time', () => {
   const epoch = 1510799750000 //november 15th 9:35pm 2017 EST
   // https://www.epochconverter.com/timezones?q=1510799750000
   const arr = [
@@ -32,13 +33,12 @@ test('random november time', (t) => {
   arr.forEach((a) => {
     const s = spacetime(epoch, a[0])
     const have = `${s.format('day-short')} ${s.time()}`
-    t.equal(a[1], have, a[0])
+    assert.equal(a[1], have, a[0])
   })
-  t.end()
 })
 
 // copied from https://www.epochconverter.com/timezones?q=1520999750000
-test('random march time', (t) => {
+test('random march time', () => {
   const epoch = 1520999750000 //March 13, 2018 11:55pm
   const arr = [
     ['Africa/Abidjan', 'Mar 14 2018 03:55:50'],
@@ -69,13 +69,12 @@ test('random march time', (t) => {
     const have = `${s.format(
       'month-short'
     )} ${s.date()} ${s.year()} ${hour}:${s.minute()}:${s.seconds()}`
-    t.equal(a[1], have, a[0])
+    assert.equal(a[1], have, a[0])
   })
-  t.end()
 })
 
 // https://www.epochconverter.com/timezones?q=1520999750000
-test('random july time', (t) => {
+test('random july time', () => {
   const epoch = 1500299750000
   const arr = [
     ['Africa/Abidjan', 'Jul 17 1:55pm'],
@@ -96,13 +95,12 @@ test('random july time', (t) => {
       hour = '0' + hour
     }
     const have = `${s.format('month-short')} ${s.date()} ${s.time()}`
-    t.equal(a[1], have, a[0])
+    assert.equal(a[1], have, a[0])
   })
-  t.end()
 })
 
 // https://www.epochconverter.com/timezones?q=1520999750000
-test('random january time', (t) => {
+test('random january time', () => {
   const epoch = 1580299750000
   const arr = [
     ['Africa/Abidjan', 'Jan 29 12:09pm'],
@@ -123,7 +121,6 @@ test('random january time', (t) => {
       hour = '0' + hour
     }
     const have = `${s.format('month-short')} ${s.date()} ${s.time()}`
-    t.equal(a[1], have, a[0])
+    assert.equal(a[1], have, a[0])
   })
-  t.end()
 })

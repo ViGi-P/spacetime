@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('informal timezones', (t) => {
+test('informal timezones', () => {
   const arr = [
     ['Toronto', 'America/Toronto'],
     ['toronto', 'America/Toronto'],
@@ -22,7 +23,6 @@ test('informal timezones', (t) => {
   arr.forEach((a) => {
     const left = spacetime(date, a[0])
     const right = spacetime(date, a[1])
-    t.equal(left.format('nice'), right.format('nice'), a[0])
+    assert.equal(left.format('nice'), right.format('nice'), a[0])
   })
-  t.end()
 })

@@ -1,224 +1,215 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('set', (t) => {
+test('set', () => {
   let s = spacetime('June 22, 2017 20:12:01', 'Canada/Pacific')
 
   s = s.date(5)
-  t.equal(s.date(), 5, '.date(5)')
+  assert.equal(s.date(), 5, '.date(5)')
 
   s = s.date('24')
-  t.equal(s.date(), 24, '.date-string-int')
+  assert.equal(s.date(), 24, '.date-string-int')
 
   s = s.date(12)
-  t.equal(s.date(), 12, '.date()')
+  assert.equal(s.date(), 12, '.date()')
 
   s = s.year(2015)
-  t.equal(s.year(), 2015, '.year()')
+  assert.equal(s.year(), 2015, '.year()')
 
   s = s.hour(5)
-  t.equal(s.hour(), 5, '.hour()')
+  assert.equal(s.hour(), 5, '.hour()')
 
   s = s.minute(8)
-  t.equal(s.minute(), 8, '.minute()')
+  assert.equal(s.minute(), 8, '.minute()')
 
   s = s.month('february')
-  t.equal(s.month(), 1, '.month()')
+  assert.equal(s.month(), 1, '.month()')
 
   s = s.month('June')
-  t.equal(s.monthName(), 'june', '.month()')
+  assert.equal(s.monthName(), 'june', '.month()')
 
   s = s.month('apr')
-  t.equal(s.monthName(), 'april', '.month()')
+  assert.equal(s.monthName(), 'april', '.month()')
 
   s = s.week(1) //mon dec 29th
-  t.equal(s.monthName(), 'december', '.week()')
+  assert.equal(s.monthName(), 'december', '.week()')
 
   s = s.quarter(1)
-  t.equal(s.quarter(), 1, '.quarter()')
+  assert.equal(s.quarter(), 1, '.quarter()')
 
   s = s.hourFloat(7.25)
-  t.equal(s.hour(), 7, '.hour()')
-  t.equal(s.minute(), 15, '.minute()')
+  assert.equal(s.hour(), 7, '.hour()')
+  assert.equal(s.minute(), 15, '.minute()')
 
   s = s.dayOfYear(15)
-  t.equal(s.monthName(), 'january', 'dayOfYear-.month()')
-  t.equal(s.date(), 15, '.dayofYear-date')
+  assert.equal(s.monthName(), 'january', 'dayOfYear-.month()')
+  assert.equal(s.date(), 15, '.dayofYear-date')
 
   s = s.month(1)
-  t.equal(s.monthName(), 'february', '.monthNum()')
+  assert.equal(s.monthName(), 'february', '.monthNum()')
 
   s = s.season('summer')
-  t.equal(s.monthName(), 'june', 'season-.month()')
-  t.equal(s.date(), 1, 'season-.date()')
+  assert.equal(s.monthName(), 'june', 'season-.month()')
+  assert.equal(s.date(), 1, 'season-.date()')
 
   s = s.hour(7)
   s = s.ampm('am')
-  t.equal(s.ampm(), 'am', 'ampm-already-ampm()')
-  t.equal(s.hour(), 7, 'ampm-already-hour()')
+  assert.equal(s.ampm(), 'am', 'ampm-already-ampm()')
+  assert.equal(s.hour(), 7, 'ampm-already-hour()')
 
   s = s.ampm('pm')
-  t.equal(s.hour(), 19, 'ampm-hour()')
-  t.equal(s.ampm(), 'pm', 'ampm-ampm()')
+  assert.equal(s.hour(), 19, 'ampm-hour()')
+  assert.equal(s.ampm(), 'pm', 'ampm-ampm()')
 
   s = s.time('5:25')
-  t.equal(s.hour(), 5, 'time-hour()')
-  t.equal(s.minute(), 25, 'time-minute()')
+  assert.equal(s.hour(), 5, 'time-hour()')
+  assert.equal(s.minute(), 25, 'time-minute()')
 
   s = s.time('5:20pm')
-  t.equal(s.hour(), 17, 'time-hour-pm()')
-  t.equal(s.minute(), 20, 'time-minute-pm()')
+  assert.equal(s.hour(), 17, 'time-hour-pm()')
+  assert.equal(s.minute(), 20, 'time-minute-pm()')
 
   s = s.time('5:20 pm')
-  t.equal(s.hour(), 17, 'time-hour-pm-with-space()')
-  t.equal(s.minute(), 20, 'time-minute-pm-with-space()')
+  assert.equal(s.hour(), 17, 'time-hour-pm-with-space()')
+  assert.equal(s.minute(), 20, 'time-minute-pm-with-space()')
 
   s = s.time('5pm')
-  t.equal(s.hour(), 17, 'time-hour-pm-hour-only()')
-  t.equal(s.minute(), 0, 'time-minute-pm-hour-only()')
+  assert.equal(s.hour(), 17, 'time-hour-pm-hour-only()')
+  assert.equal(s.minute(), 0, 'time-minute-pm-hour-only()')
 
   s = s.time('6 pm')
-  t.equal(s.hour(), 18, 'time-hour-pm-hour-only-with-space()')
-  t.equal(s.minute(), 0, 'time-minute-pm-hour-only-with-space()')
+  assert.equal(s.hour(), 18, 'time-hour-pm-hour-only-with-space()')
+  assert.equal(s.minute(), 0, 'time-minute-pm-hour-only-with-space()')
 
   s = s.time('13:20pm')
-  t.equal(s.hour(), 13, 'time-hour-24h()')
-  t.equal(s.minute(), 20, 'time-minute-24h()')
-  t.equal(s.era(), 'AD', '2017 ad')
+  assert.equal(s.hour(), 13, 'time-hour-24h()')
+  assert.equal(s.minute(), 20, 'time-minute-24h()')
+  assert.equal(s.era(), 'AD', '2017 ad')
 
   s = s.era('bc')
-  t.equal(s.era(), 'BC', '2015 bc')
-  // t.equal(s.year(), -2015, '-2015') //may be broken?
-  t.end()
+  assert.equal(s.era(), 'BC', '2015 bc')
+  // assert.equal(s.year(), -2015, '-2015') //may be broken?
 })
 
-test('set by weekday', (t) => {
+test('set by weekday', () => {
   let s = spacetime([2017, 2, 22], 'Canada/Eastern') //wednesday
   //make sure it's in the right place
-  t.equal(s.date(), 22, '.date()')
-  t.equal(s.dayName(), 'wednesday', '.day()')
+  assert.equal(s.date(), 22, '.date()')
+  assert.equal(s.dayName(), 'wednesday', '.day()')
 
   s = s.day('thursday')
-  t.equal(s.date(), 23, 'now thursday')
+  assert.equal(s.date(), 23, 'now thursday')
 
   s = s.day('friday')
-  t.equal(s.date(), 24, 'now friday')
+  assert.equal(s.date(), 24, 'now friday')
 
   s = s.day('sat')
-  t.equal(s.date(), 25, 'now saturday')
+  assert.equal(s.date(), 25, 'now saturday')
 
   s = s.day('sunday')
   //never click-into the next week
-  t.equal(s.date(), 19, 'now sunday')
+  assert.equal(s.date(), 19, 'now sunday')
 
   s = s.day('monday')
-  t.equal(s.date(), 20, 'now monday')
+  assert.equal(s.date(), 20, 'now monday')
 
   s = s.day(2)
-  t.equal(s.date(), 21, 'now tuesday')
-  t.end()
+  assert.equal(s.date(), 21, 'now tuesday')
 })
 
-test('set-tricky', (t) => {
+test('set-tricky', () => {
   let s = spacetime('June 22, 2017 13:01:00', 'Canada/Eastern') //the 22rd
-  t.equal(s.date(), 22, '.date()')
-  t.equal(s.hour(), 13, '.hour()')
-  t.equal(s.ampm(), 'pm', 'night-here')
+  assert.equal(s.date(), 22, '.date()')
+  assert.equal(s.hour(), 13, '.hour()')
+  assert.equal(s.ampm(), 'pm', 'night-here')
 
   s = s.goto('Australia/Brisbane') //the 23rd
-  t.equal(s.date(), 23, 'tomorrow-there')
-  t.equal(s.ampm(), 'am', 'am-there')
+  assert.equal(s.date(), 23, 'tomorrow-there')
+  assert.equal(s.ampm(), 'am', 'am-there')
   //make it 1oclock
   s = s.hour(13)
-  t.equal(s.hour(), 13, '.hour-remote')
+  assert.equal(s.hour(), 13, '.hour-remote')
   //make it 1:30pm
   s = s.minute(30)
-  t.equal(s.minute(), 30, '.minute-remote')
+  assert.equal(s.minute(), 30, '.minute-remote')
   //make it the 5th (not working)
   s = s.date(5)
-  t.equal(s.date(), 5, 'set-date-remotely')
-  t.end()
+  assert.equal(s.date(), 5, 'set-date-remotely')
 })
 
-test('rollback-in-constructor', (t) => {
+test('rollback-in-constructor', () => {
   let s = spacetime('June 22, 2017 5:01:00', 'Australia/Brisbane')
-  t.equal(s.hour(), 5, 'hour-australia')
+  assert.equal(s.hour(), 5, 'hour-australia')
   s = spacetime('June 22, 2017 5:01:00', 'Canada/Pacific')
-  t.equal(s.hour(), 5, 'hour-pacific')
+  assert.equal(s.hour(), 5, 'hour-pacific')
   s = spacetime('June 22, 2017 5:01:00', 'Canada/Eastern')
-  t.equal(s.hour(), 5, 'hour-eastern')
-  t.end()
+  assert.equal(s.hour(), 5, 'hour-eastern')
 })
 
-test('set-date-fancy', (t) => {
+test('set-date-fancy', () => {
   let s = spacetime('June 22, 2017 20:01:00', 'Australia/Brisbane') //the 22rd
-  t.equal(s.date(), 22, '.date-before')
+  assert.equal(s.date(), 22, '.date-before')
   s = s.date(15)
-  t.equal(s.date(), 15, '.date-after')
-  t.end()
+  assert.equal(s.date(), 15, '.date-after')
 })
 
-test('military time format', (t) => {
+test('military time format', () => {
   let s = spacetime('2018-10-21')
   s = s.time('13h00')
-  t.equal(s.time(), '1:00pm', '13h00')
+  assert.equal(s.time(), '1:00pm', '13h00')
   s = s.time('2h30')
-  t.equal(s.time(), '2:30am', '2h30')
-  t.end()
+  assert.equal(s.time(), '2:30am', '2h30')
 })
 
-test('add-a-week-bug', (t) => {
+test('add-a-week-bug', () => {
   const a = spacetime('2018-10-21').goto('America/Adak').add(1, 'week')
   const b = spacetime('2018-10-22').goto('America/Adak').add(1, 'week')
-  t.notEqual(a.format('iso'), b.format('iso'), 'two days are not the same')
-  t.equal(a.diff(b, 'day'), 1, 'still one day apart')
-  t.end()
+  assert.notEqual(a.format('iso'), b.format('iso'), 'two days are not the same')
+  assert.equal(a.diff(b, 'day'), 1, 'still one day apart')
 })
 
-test('set time', (t) => {
+test('set time', () => {
   const a = spacetime('2018-10-21').time('5:00pm').time('3:90pm')
-  t.equal(a.time(), '3:59pm', 'dont overflow minutes in time format')
-  t.end()
+  assert.equal(a.time(), '3:59pm', 'dont overflow minutes in time format')
 })
 
-test('invalid time parsing', (t) => {
+test('invalid time parsing', () => {
   // Invalid time formats should return isValid() === false
   let s = spacetime.now()
 
   s = s.time('abc')
-  t.equal(s.isValid(), false, 'abc is invalid')
+  assert.equal(s.isValid(), false, 'abc is invalid')
 
   s = spacetime.now().time('2')
-  t.equal(s.isValid(), false, '2 (no am/pm) is invalid')
+  assert.equal(s.isValid(), false, '2 (no am/pm) is invalid')
 
   s = spacetime.now().time('hello world')
-  t.equal(s.isValid(), false, 'hello world is invalid')
+  assert.equal(s.isValid(), false, 'hello world is invalid')
 
   s = spacetime.now().time('')
-  t.equal(s.isValid(), false, 'empty string is invalid')
+  assert.equal(s.isValid(), false, 'empty string is invalid')
 
   s = spacetime.now().time('not a time')
-  t.equal(s.isValid(), false, 'not a time is invalid')
+  assert.equal(s.isValid(), false, 'not a time is invalid')
 
-  t.end()
 })
 
-test('time parsing edge cases', (t) => {
+test('time parsing edge cases', () => {
   let s = spacetime.now()
 
   s = s.time('12am')
-  t.equal(s.isValid(), true, '12am is valid')
-  t.equal(s.hour(), 0, '12am is midnight (hour 0)')
+  assert.equal(s.isValid(), true, '12am is valid')
+  assert.equal(s.hour(), 0, '12am is midnight (hour 0)')
 
   s = spacetime.now().time('12pm')
-  t.equal(s.isValid(), true, '12pm is valid')
-  t.equal(s.hour(), 12, '12pm is noon (hour 12)')
+  assert.equal(s.isValid(), true, '12pm is valid')
+  assert.equal(s.hour(), 12, '12pm is noon (hour 12)')
 
   s = spacetime.now().time('1:00am')
-  t.equal(s.isValid(), true, '1:00am is valid')
+  assert.equal(s.isValid(), true, '1:00am is valid')
 
   s = spacetime.now().time('11:59pm')
-  t.equal(s.isValid(), true, '11:59pm is valid')
+  assert.equal(s.isValid(), true, '11:59pm is valid')
 
-  t.end()
 })

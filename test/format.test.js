@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('to-from utc-format', (t) => {
+test('to-from utc-format', () => {
   const arr = [
     '1998-05-01T08:00:00.000Z',
     '1998-05-30T22:00:00.000Z',
@@ -33,17 +34,16 @@ test('to-from utc-format', (t) => {
   arr.forEach((str) => {
     const s = spacetime(str)
     const out = s.format('iso')
-    t.equal(str, out, 'equal - ' + str)
+    assert.equal(str, out, 'equal - ' + str)
   })
 
   const str = '2016-01-01T09:00:00.122Z'
   const s = spacetime(str, 'Canada/Eastern')
-  t.equal(s.format('iso'), str, 'input matches output')
+  assert.equal(s.format('iso'), str, 'input matches output')
 
-  t.end()
 })
 
-test('unix-formatting', (t) => {
+test('unix-formatting', () => {
   const epoch = 1510850065194
   let s = spacetime(epoch, 'Canada/Eastern')
   //examples from http://unicode.org/reports/tr35/tr35-25.html#Date_Format_Patterns
@@ -63,7 +63,7 @@ test('unix-formatting', (t) => {
     ["HH 'h'", '11 h']
   ]
   arr.forEach((a) => {
-    t.equal(s.unixFmt(a[0]), a[1], a[0])
+    assert.equal(s.unixFmt(a[0]), a[1], a[0])
   })
 
   //test another date
@@ -75,60 +75,55 @@ test('unix-formatting', (t) => {
     ['MMMM', 'February']
   ]
   arr.forEach((a) => {
-    t.equal(s.unixFmt(a[0]), a[1], a[0])
+    assert.equal(s.unixFmt(a[0]), a[1], a[0])
   })
-  t.end()
 })
 
-test('bc-year-formatting', (t) => {
+test('bc-year-formatting', () => {
   let s = spacetime('2,000 BC')
-  t.equal(s.format('year'), '2000 BC', '2000bc')
-  t.equal(s.year(), -2000, '-2000')
+  assert.equal(s.format('year'), '2000 BC', '2000bc')
+  assert.equal(s.year(), -2000, '-2000')
 
   s = spacetime('July 27th, 2018')
   s = s.minus(2020, 'years')
-  t.equal(s.year(), -2, '-2')
-  t.equal(s.format('year'), '2 BC', '2bc')
-  t.equal(s.monthName(), 'july', 'still july')
-  t.equal(s.date(), 27, 'still july 27')
-  t.equal(s.format('iso-short'), '-0002-07-27', '-0002-07-27')
+  assert.equal(s.year(), -2, '-2')
+  assert.equal(s.format('year'), '2 BC', '2bc')
+  assert.equal(s.monthName(), 'july', 'still july')
+  assert.equal(s.date(), 27, 'still july 27')
+  assert.equal(s.format('iso-short'), '-0002-07-27', '-0002-07-27')
 
-  t.end()
 })
 
-test('iso-in = iso-out', (t) => {
+test('iso-in = iso-out', () => {
   let str = '2018-07-09T12:59:00.362-07:00'
   const minus = spacetime(str)
-  t.equal(minus.format('iso'), str, 'minus-seven')
+  assert.equal(minus.format('iso'), str, 'minus-seven')
 
   str = '2018-07-09T12:59:00.000+07:00'
   const plus = spacetime(str)
-  t.equal(plus.format('iso'), str, 'plus-seven')
+  assert.equal(plus.format('iso'), str, 'plus-seven')
 
   str = '2018-07-09T12:59:00.393Z'
   const zero = spacetime(str)
-  t.equal(zero.format('iso'), str, 'zulu')
+  assert.equal(zero.format('iso'), str, 'zulu')
 
-  t.end()
 })
 
-test('iso-with-fraction-offset', (t) => {
+test('iso-with-fraction-offset', () => {
   const s = spacetime('June 8th 1918', 'Asia/Calcutta').time('1:00pm')
-  t.equal(s.format('iso'), '1918-06-08T13:00:00.000+05:30', 'correct offset')
-  t.end()
+  assert.equal(s.format('iso'), '1918-06-08T13:00:00.000+05:30', 'correct offset')
 })
 
-test('hour-pad', (t) => {
+test('hour-pad', () => {
   let s = spacetime('June 8th 1918', 'Asia/Calcutta').time('1:23pm')
-  t.equal(s.format('{hour-pad}:{minute-pad}'), '01:23', 'hour-pad')
-  t.equal(s.format('{hour-24-pad}:{minute-pad}'), '13:23', '24-hour-pad')
+  assert.equal(s.format('{hour-pad}:{minute-pad}'), '01:23', 'hour-pad')
+  assert.equal(s.format('{hour-24-pad}:{minute-pad}'), '13:23', '24-hour-pad')
   s = s.ampm('am')
-  t.equal(s.format('{hour-pad}:{minute-pad}'), '01:23', 'am-hour-pad')
-  t.equal(s.format('{hour-24-pad}:{minute-pad}'), '01:23', 'am-24-hour-pad')
-  t.end()
+  assert.equal(s.format('{hour-pad}:{minute-pad}'), '01:23', 'am-hour-pad')
+  assert.equal(s.format('{hour-24-pad}:{minute-pad}'), '01:23', 'am-24-hour-pad')
 })
 
-test('made-up-syntax', (t) => {
+test('made-up-syntax', () => {
   let s = spacetime('June 8th 1918', 'Asia/Calcutta')
   s = s.time('4:45pm')
   const arr = [
@@ -138,30 +133,26 @@ test('made-up-syntax', (t) => {
     ['{day} the {date-ordinal} of {month}', 'Saturday the 8th of June']
   ]
   arr.forEach((a) => {
-    t.equal(s.format(a[0]), a[1], a[0])
+    assert.equal(s.format(a[0]), a[1], a[0])
   })
-  t.end()
 })
 
-test('test 0-based formatting', (t) => {
+test('test 0-based formatting', () => {
   const s = spacetime('January 4 2017').time('12:01am')
   const out = s.format('{month} {month-number} {month-pad} {month-iso} {hour-24}')
-  t.equal(out, 'January 0 00 01 0', '0-based and 1-based months')
-  t.end()
+  assert.equal(out, 'January 0 00 01 0', '0-based and 1-based months')
 })
 
-test('offset formatting', (t) => {
+test('offset formatting', () => {
   const date = spacetime(null, 'Asia/Kathmandu')
-  t.equal(date.format('offset'), '+05:45', '45min offset')
-  t.end()
+  assert.equal(date.format('offset'), '+05:45', '45min offset')
 })
 
-test('test millisecond', (t) => {
+test('test millisecond', () => {
   const date = spacetime('1990-03-22T06:20:30.020+11:30')
-  t.equal(date.format('millisecond'), '20', 'Millisecond in format')
-  t.equal(date.format('millisecond-pad'), '020', 'Millisecond with pad in format')
-  t.equal(date.unixFmt('SSS'), '020', 'Millisecond with pad in unix')
-  t.end()
+  assert.equal(date.format('millisecond'), '20', 'Millisecond in format')
+  assert.equal(date.format('millisecond-pad'), '020', 'Millisecond with pad in format')
+  assert.equal(date.unixFmt('SSS'), '020', 'Millisecond with pad in unix')
 })
 /* FIXME failing test
 test('unix-fmt-padding', t => {
@@ -173,22 +164,20 @@ test('unix-fmt-padding', t => {
     minute: 2
   })
   let str = d.format("ww DDD MM d, hh:mm a")
-  t.equal('04 027 Jan 27, 04:02 AM', str, 'string is 0-padded')
+  assert.equal('04 027 Jan 27, 04:02 AM', str, 'string is 0-padded')
 
   str = d.format("w D MM d, h:m a")
-  t.equal('4 27 Jan 27, 4:2 AM', str, 'string is not-0-padded')
-  t.end();
+  assert.equal('4 27 Jan 27, 4:2 AM', str, 'string is not-0-padded')
 });*/
 
 test('unix-year-padding', t => {
   let s = spacetime('sep 1 2022')
-  t.equal(s.unixFmt('yy'), '22', 'non-zero-end')
+  assert.equal(s.unixFmt('yy'), '22', 'non-zero-end')
   s = spacetime('sep 1 2000')
-  t.equal(s.unixFmt('yy'), '00', 'zero-end')
-  t.end()
+  assert.equal(s.unixFmt('yy'), '00', 'zero-end')
 })
 
-test('am-pm-variants', (t) => {
+test('am-pm-variants', () => {
   let s = spacetime('January 1, 2023')
   s = s.time('4:45pm')
   const arr = [
@@ -198,51 +187,47 @@ test('am-pm-variants', (t) => {
     ['{AMPM}', 'PM'],
   ]
   arr.forEach((a) => {
-    t.equal(s.format(a[0]), a[1], a[2], a[3])
+    assert.equal(s.format(a[0]), a[1], a[2], a[3])
   })
-  t.end()
 })
 
-test('SQL ISO 9075', (t) => {
+test('SQL ISO 9075', () => {
   let s = spacetime('January 1, 2023')
   s = s.time('4:45pm')
-  t.equal(s.format('sql'), '2023-01-01 16:45:00')
+  assert.equal(s.format('sql'), '2023-01-01 16:45:00')
 
   const sql = '2021-11-20 01:01:02'
-  t.equal(spacetime(sql).format('sql'), sql, 'in-out-sql')
-  t.end()
+  assert.equal(spacetime(sql).format('sql'), sql, 'in-out-sql')
 })
 
-test('epochSeconds', (t) => {
+test('epochSeconds', () => {
   let s = spacetime("2025-01-01T00:00.000Z")
-  t.equal(s.epochSeconds(), 1735689600, 'jan-1-utc epochSeconds')
-  // t.equal(spacetime("foobar oh yeah").epochSeconds(), null, 'invalid epochSeconds')
+  assert.equal(s.epochSeconds(), 1735689600, 'jan-1-utc epochSeconds')
+  // assert.equal(spacetime("foobar oh yeah").epochSeconds(), null, 'invalid epochSeconds')
 
   s = spacetime("April 5, 2025 12:43:50", 'Canada/Eastern')
-  t.equal(s.epochSeconds(), 1743871430, 'apr-5 epochSeconds')
+  assert.equal(s.epochSeconds(), 1743871430, 'apr-5 epochSeconds')
 
   let a = spacetime.now().epochSeconds(1637362862);
-  t.equal(a.epochSeconds(), 1637362862, 'seconds 1637362862');
+  assert.equal(a.epochSeconds(), 1637362862, 'seconds 1637362862');
 
   let b = spacetime().epochSeconds(1743871430);
-  t.equal(b.epochSeconds(), 1743871430, 'seconds 1743871430');
-  t.ok(s.isEqual(b), 'equal to iso');
+  assert.equal(b.epochSeconds(), 1743871430, 'seconds 1743871430');
+  assert.ok(s.isEqual(b), 'equal to iso');
 
-  t.end();
 })
 
-test('epoch inputs', (t) => {
+test('epoch inputs', () => {
 
   let mils = 1744200453000
   let secs = 1744200453
 
   let a = spacetime(mils)
-  t.equal(a.epochSeconds(), secs, 'mils->secs')
-  t.equal(a.epoch, mils, 'mils->mils')
+  assert.equal(a.epochSeconds(), secs, 'mils->secs')
+  assert.equal(a.epoch, mils, 'mils->mils')
 
   let b = spacetime.now().epochSeconds(secs)
-  t.equal(b.epochSeconds(), secs, 'secs->secs')
-  t.equal(b.epoch, mils, 'secs->mils')
+  assert.equal(b.epochSeconds(), secs, 'secs->secs')
+  assert.equal(b.epoch, mils, 'secs->mils')
 
-  t.end();
 })

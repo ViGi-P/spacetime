@@ -1,33 +1,32 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('non-destructive', (t) => {
+test('non-destructive', () => {
   let s = spacetime([2017, 5, 25])
   s = s.seconds(5)
   s = s.year(2025)
-  t.equal(s.date(), 25, 'init-date')
-  t.equal(s.seconds(), 5, 'still-5-seconds')
+  assert.equal(s.date(), 25, 'init-date')
+  assert.equal(s.seconds(), 5, 'still-5-seconds')
 
   //but this method 0's-out things:
   s = s.quarter('q2')
-  t.equal(s.date(), 1, 'moved-date')
-  t.equal(s.seconds(), 0, 'now-not-5-seconds')
-  t.end()
+  assert.equal(s.date(), 1, 'moved-date')
+  assert.equal(s.seconds(), 0, 'now-not-5-seconds')
 })
 
-test('semi-destructive', (t) => {
+test('semi-destructive', () => {
   let s = spacetime('June 12, 2017 20:01:00', 'Australia/Brisbane')
-  t.equal(s.date(), 12, 'date-init')
+  assert.equal(s.date(), 12, 'date-init')
   s = s.month('march')
-  t.equal(s.monthName(), 'march', 'now-march')
-  t.equal(s.date(), 12, 'still-12th')
+  assert.equal(s.monthName(), 'march', 'now-march')
+  assert.equal(s.date(), 12, 'still-12th')
 
   s = spacetime('June 30, 2017 20:01:00', 'Australia/Brisbane')
-  t.equal(s.date(), 30, 'date-init')
+  assert.equal(s.date(), 30, 'date-init')
   s = s.month('february')
-  t.equal(s.monthName(), 'february', 'now-february')
+  assert.equal(s.monthName(), 'february', 'now-february')
   //close-as-possible
-  t.equal(s.date(), 28, 'now-28th')
+  assert.equal(s.date(), 28, 'now-28th')
 
-  t.end()
 })

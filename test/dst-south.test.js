@@ -1,4 +1,5 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 import dstParse from './lib/dstParse.js'
 // some northern hemisphere zones with dst changes
@@ -10,7 +11,7 @@ const zones = [
   // 'chile/easterisland',
 ]
 
-test('south-increment-march', (t) => {
+test('south-increment-march', () => {
   zones.forEach((tz) => {
     // get fall dst change
     const dstStr = spacetime().timezones[tz].dst
@@ -22,20 +23,19 @@ test('south-increment-march', (t) => {
     // start rolling towards the dst shift (but don't hit it)
     for (let i = 0; i < 12; i += 1) {
       const time = before.time()
-      t.equal(before.isBefore(after), true, time + ' before-change ' + tz)
-      t.equal(before.timezone().current.isDST, false, time + ' dst-off ' + tz)
+      assert.equal(before.isBefore(after), true, time + ' before-change ' + tz)
+      assert.equal(before.timezone().current.isDST, false, time + ' dst-off ' + tz)
       before = before.add(10, 'minutes')
     }
     for (let i = 0; i < 14; i += 1) {
       const time = before.time()
-      t.equal(before.timezone().current.isDST, true, time + ' dst-now-on ' + tz)
+      assert.equal(before.timezone().current.isDST, true, time + ' dst-now-on ' + tz)
       before = before.add(10, 'minutes')
     }
   })
-  t.end()
 })
 
-test('south-increment-nov', (t) => {
+test('south-increment-nov', () => {
   zones.forEach((tz) => {
     // get fall dst change
     const dstStr = spacetime().timezones[tz].dst
@@ -47,15 +47,14 @@ test('south-increment-nov', (t) => {
     // start rolling towards the dst shift (but don't hit it)
     for (let i = 0; i < 12; i += 1) {
       const time = before.time()
-      t.equal(before.isBefore(after), true, time + ' before-change ' + tz)
-      t.equal(before.timezone().current.isDST, true, time + ' dst-on ' + tz)
+      assert.equal(before.isBefore(after), true, time + ' before-change ' + tz)
+      assert.equal(before.timezone().current.isDST, true, time + ' dst-on ' + tz)
       before = before.add(10, 'minutes')
     }
     for (let i = 0; i < 14; i += 1) {
       const time = before.time()
-      t.equal(before.timezone().current.isDST, false, time + ' dst-now-off ' + tz)
+      assert.equal(before.timezone().current.isDST, false, time + ' dst-now-off ' + tz)
       before = before.add(10, 'minutes')
     }
   })
-  t.end()
 })

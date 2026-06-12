@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('swapTz', (t) => {
+test('swapTz', () => {
   const arr = [
     'Africa/Dar_es_Salaam',
     'Africa/Porto-Novo',
@@ -18,11 +19,10 @@ test('swapTz', (t) => {
     'Etc/GMT+7',
   ]
   let s = spacetime('2011-12-03T10:15:30', 'america/montreal')
-  t.equal(s.time(), '10:15am', 'first-time')
+  assert.equal(s.time(), '10:15am', 'first-time')
   arr.forEach(tz => {
     s = s.timezone(tz)
-    t.equal(s.timezone().name, tz, 'swapped tz ', tz)
-    t.equal(s.time(), '10:15am', 'swap time ' + tz)
+    assert.equal(s.timezone().name, tz, 'swapped tz ', tz)
+    assert.equal(s.time(), '10:15am', 'swap time ' + tz)
   })
-  t.end()
 })

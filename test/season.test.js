@@ -1,4 +1,5 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
 const south = [
@@ -18,54 +19,51 @@ const north = [
   'Asia/Istanbul'
 ]
 
-test('season-by-hemisphere', (t) => {
+test('season-by-hemisphere', () => {
   //june
   let s = spacetime('june 6 2017', 'Canada/Eastern')
   south.forEach((tz) => {
     s = s.goto(tz)
-    t.equal(s.season(), 'winter', tz + ' june-winter')
+    assert.equal(s.season(), 'winter', tz + ' june-winter')
   })
   north.forEach((tz) => {
     s = s.goto(tz)
-    t.equal(s.season(), 'summer', tz + ' june-summer')
+    assert.equal(s.season(), 'summer', tz + ' june-summer')
   })
-  t.end()
 })
 
-test('set season - north', (t) => {
+test('set season - north', () => {
   let s = spacetime('winter', 'Canada/Eastern')
-  t.equal(s.monthName(), 'december', 'winter .month()')
-  t.equal(s.date(), 1, 'q1 .date()')
+  assert.equal(s.monthName(), 'december', 'winter .month()')
+  assert.equal(s.date(), 1, 'q1 .date()')
 
   s = spacetime('spring', 'Canada/Eastern')
-  t.equal(s.monthName(), 'march', 'spring .month()')
-  t.equal(s.date(), 1, 'spring .date()')
+  assert.equal(s.monthName(), 'march', 'spring .month()')
+  assert.equal(s.date(), 1, 'spring .date()')
 
   s = spacetime('summer', 'Canada/Eastern')
-  t.equal(s.monthName(), 'june', 'summer .month()')
-  t.equal(s.date(), 1, 'summer .date()')
+  assert.equal(s.monthName(), 'june', 'summer .month()')
+  assert.equal(s.date(), 1, 'summer .date()')
 
   s = spacetime('fall', 'Canada/Eastern')
-  t.equal(s.monthName(), 'september', 'fall .month()')
-  t.equal(s.date(), 1, 'fall .date()')
+  assert.equal(s.monthName(), 'september', 'fall .month()')
+  assert.equal(s.date(), 1, 'fall .date()')
 
   s = spacetime('fall 2001', 'Canada/Eastern')
-  t.equal(s.monthName(), 'september', 'fall year .month()')
-  t.equal(s.date(), 1, 'fall year .date()')
-  t.equal(s.year(), 2001, 'fall .year()')
+  assert.equal(s.monthName(), 'september', 'fall year .month()')
+  assert.equal(s.date(), 1, 'fall year .date()')
+  assert.equal(s.year(), 2001, 'fall .year()')
 
   s = spacetime('fall of 1960', 'Canada/Eastern')
-  t.equal(s.monthName(), 'september', 'fall of year .month()')
-  t.equal(s.date(), 1, 'fall of year .date()')
-  t.equal(s.year(), 1960, 'fall of .year()')
+  assert.equal(s.monthName(), 'september', 'fall of year .month()')
+  assert.equal(s.date(), 1, 'fall of year .date()')
+  assert.equal(s.year(), 1960, 'fall of .year()')
 
-  t.end()
 })
 
-test('season - south', (t) => {
+test('season - south', () => {
   let s = spacetime('nov 11 2022', 'australia/adelaide')
-  t.equal(s.season(), 'spring', 'south-spring')
+  assert.equal(s.season(), 'spring', 'south-spring')
   s = s.add(4, 'weeks')
-  t.equal(s.season(), 'summer', 'south-summer')
-  t.end()
+  assert.equal(s.season(), 'summer', 'south-summer')
 })

@@ -1,8 +1,9 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 const here = '[Intl] '
 
-test('intl-node ', (t) => {
+test('intl-node ', () => {
   let arr = []
   // only supported >=node 18
   if (typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') {
@@ -10,15 +11,14 @@ test('intl-node ', (t) => {
   }
   arr.forEach((tz) => {
     const d = spacetime.now(tz)
-    t.ok(d.isValid(), here + tz)
+    assert.ok(d.isValid(), here + tz)
   })
 
-  t.throws(() => spacetime.now('flagbarg'), 'foo tz throws')
-  t.doesNotThrow(() => spacetime.now('cet'), 'cet tz does not')
-  t.end()
+  assert.throws(() => spacetime.now('flagbarg'), 'foo tz throws')
+  assert.doesNotThrow(() => spacetime.now('cet'), 'cet tz does not')
 })
 
-test('intl-firefox', (t) => {
+test('intl-firefox', () => {
   //results of Intl.supportedValuesOf('timeZone') Aug 2023
   const arr = [
     'Africa/Abidjan',
@@ -493,7 +493,6 @@ test('intl-firefox', (t) => {
   ]
   arr.forEach((tz) => {
     const d = spacetime.now(tz)
-    t.ok(d.isValid(), here + tz)
+    assert.ok(d.isValid(), here + tz)
   })
-  t.end()
 })

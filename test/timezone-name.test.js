@@ -1,7 +1,8 @@
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import spacetime from './lib/index.js'
 
-test('titlecase', (t) => {
+test('titlecase', () => {
   const arr = [
     'Africa/Dar_es_Salaam',
     'Africa/Porto-Novo',
@@ -19,7 +20,6 @@ test('titlecase', (t) => {
   ]
   arr.forEach(tz => {
     const s = spacetime.now(tz)
-    t.equal(s.timezone().name, tz, tz)
+    assert.equal(s.timezone().name, tz, tz)
   })
-  t.end()
 })

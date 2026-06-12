@@ -1,5 +1,6 @@
 import spacetime from './lib/index.js'
-import test from 'tape'
+import { test } from 'node:test'
+import assert from './lib/assert.js'
 import api from '../api/index.js'
 
 const instanceSections = ['main', 'getters', 'utils']
@@ -31,26 +32,24 @@ const staticUndocumented = new Set([
 ])
 
 // every documented instance method should actually exist as a function
-test('documented instance methods exist', (t) => {
+test('documented instance methods exist', () => {
   const s = spacetime('1998-03-28')
   instanceSections.forEach((section) => {
     Object.keys(api[section]).forEach((k) => {
-      t.equal(typeof s[k], 'function', `${section}.${k} exists`)
+      assert.equal(typeof s[k], 'function', `${section}.${k} exists`)
     })
   })
-  t.end()
 })
 
 // every documented static method should actually exist as a function
-test('documented static methods exist', (t) => {
+test('documented static methods exist', () => {
   Object.keys(api.statics).forEach((k) => {
-    t.equal(typeof spacetime[k], 'function', `statics.${k} exists`)
+    assert.equal(typeof spacetime[k], 'function', `statics.${k} exists`)
   })
-  t.end()
 })
 
 // every public instance method should be documented (catches docs falling behind the code)
-test('public instance methods are documented', (t) => {
+test('public instance methods are documented', () => {
   const s = spacetime('1998-03-28')
   const documented = new Set(instanceSections.flatMap((section) => Object.keys(api[section])))
   const proto = Object.getPrototypeOf(s)
@@ -60,13 +59,12 @@ test('public instance methods are documented', (t) => {
       if (undocumented.has(k)) {
         return
       }
-      t.ok(documented.has(k), `${k} is documented in api/index.js`)
+      assert.ok(documented.has(k), `${k} is documented in api/index.js`)
     })
-  t.end()
 })
 
 // every public static method should be documented
-test('public static methods are documented', (t) => {
+test('public static methods are documented', () => {
   const documented = new Set(Object.keys(api.statics))
   Object.getOwnPropertyNames(spacetime)
     .filter((k) => !['length', 'name', 'prototype'].includes(k) && typeof spacetime[k] === 'function')
@@ -74,7 +72,6 @@ test('public static methods are documented', (t) => {
       if (staticUndocumented.has(k)) {
         return
       }
-      t.ok(documented.has(k), `spacetime.${k} is documented in api/index.js`)
+      assert.ok(documented.has(k), `spacetime.${k} is documented in api/index.js`)
     })
-  t.end()
 })
