@@ -54,7 +54,7 @@ let s = spacetime.now()
 s.diff(s.endOf('year'), 'days')
 // 292
 
-s.substract(11, 'hours').time()
+s.subtract(11, 'hours').time()
 // 6:50am
 
 s = s.goto('Europe/Paris')
