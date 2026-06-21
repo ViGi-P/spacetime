@@ -1,5 +1,4 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 import useOldTz from './lib/useOldTz.js'
 
@@ -36,63 +35,67 @@ const timezones = [
   'Pacific/Yap'
 ]
 
-test('epochs dont move on goto', () => {
+test('epochs dont move on goto', (t) => {
   const a = spacetime('January 13 2018', 'Pacific/Fiji')
   timezones.forEach((tz) => {
     let b = a.clone()
     b = b.goto(tz)
-    assert.ok(a.isEqual(b), tz + ' stable epoch')
+    t.ok(a.isEqual(b), tz + ' stable epoch')
   })
+  t.end()
 })
 
-test('is-always-input-date', () => {
+test('is-always-input-date', (t) => {
   timezones.forEach((tz) => {
     const a = spacetime([2030, 3, 2], tz)
-    assert.equal(a.monthName(), 'april', tz + ' is april')
-    assert.equal(a.date(), 2, tz + ' 2nd')
-    assert.equal(a.year(), 2030, tz + ' is 2030')
+    t.equal(a.monthName(), 'april', tz + ' is april')
+    t.equal(a.date(), 2, tz + ' 2nd')
+    t.equal(a.year(), 2030, tz + ' is 2030')
 
     const b = spacetime(new Date(), tz)
-    assert.equal(b.timezone().name, tz, tz + ' is right tz')
+    t.equal(b.timezone().name, tz, tz + ' is right tz')
 
     const c = spacetime('03/01/2015', tz)
-    assert.equal(c.monthName(), 'march', tz + ' is march')
-    assert.equal(c.date(), 1, tz + ' 1st')
-    assert.equal(c.year(), 2015, tz + ' is 2015')
+    t.equal(c.monthName(), 'march', tz + ' is march')
+    t.equal(c.date(), 1, tz + ' 1st')
+    t.equal(c.year(), 2015, tz + ' is 2015')
 
     const d = spacetime('January 7 2018', tz)
-    assert.equal(d.monthName(), 'january', tz + ' is january')
-    assert.equal(d.date(), 7, tz + ' 7th')
-    assert.equal(d.year(), 2018, tz + ' is 2018')
+    t.equal(d.monthName(), 'january', tz + ' is january')
+    t.equal(d.date(), 7, tz + ' 7th')
+    t.equal(d.year(), 2018, tz + ' is 2018')
 
     const e = spacetime('March 28, 1998', tz)
-    assert.equal(e.monthName(), 'march', tz + ' is march')
-    assert.equal(e.date(), 28, tz + ' 28th')
-    assert.equal(e.year(), 1998, tz + ' is 1998')
+    t.equal(e.monthName(), 'march', tz + ' is march')
+    t.equal(e.date(), 28, tz + ' 28th')
+    t.equal(e.year(), 1998, tz + ' is 1998')
   })
+  t.end()
 })
 
-test('all-timezones-move', () => {
+test('all-timezones-move', (t) => {
   timezones.forEach((tz) => {
     let d = spacetime('January 13 2018', tz)
     d = useOldTz(d)
-    assert.equal(d.dayName(), 'saturday', tz + ' saturday')
+    t.equal(d.dayName(), 'saturday', tz + ' saturday')
     d = d.date(12)
-    assert.equal(d.dayName(), 'friday', tz + ' friday')
+    t.equal(d.dayName(), 'friday', tz + ' friday')
     d = d.day('saturday')
-    assert.equal(d.dayName(), 'saturday', tz + ' set-saturday')
+    t.equal(d.dayName(), 'saturday', tz + ' set-saturday')
     d = d.startOf('week')
-    assert.equal(d.dayName(), 'monday', tz + ' monday')
+    t.equal(d.dayName(), 'monday', tz + ' monday')
     d = d.endOf('week')
-    assert.equal(d.dayName(), 'sunday', tz + ' sunday')
+    t.equal(d.dayName(), 'sunday', tz + ' sunday')
   })
+  t.end()
 })
 
-test('all-timezones-have-leap-years', () => {
+test('all-timezones-have-leap-years', (t) => {
   timezones.forEach((tz) => {
     let d = spacetime('February 28 2020', tz)
     d = d.time('11:30pm')
     d = d.add(1, 'hour')
-    assert.equal(d.format('nice'), 'Feb 29th, 12:30am', 'leap year in ' + tz)
+    t.equal(d.format('nice'), 'Feb 29th, 12:30am', 'leap year in ' + tz)
   })
+  t.end()
 })

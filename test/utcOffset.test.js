@@ -1,10 +1,9 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
 //https://en.wikipedia.org/wiki/ISO_8601
 //the zone designator would be "+01:00", "+0100", or simply "+01"
-test('set-offset-from-ISO-8601', () => {
+test('set-offset-from-ISO-8601', (t) => {
   const defaultTz = 'Canada/Eastern'
   const arr = [
     ['2017-04-03T08:00:00', defaultTz],
@@ -27,12 +26,14 @@ test('set-offset-from-ISO-8601', () => {
   ]
   arr.forEach((a) => {
     const s = spacetime(a[0], defaultTz)
-    assert.equal(s.timezone().name, a[1], a[0])
+    t.equal(s.timezone().name, a[1], a[0])
   })
 
+  t.end()
 })
 
-test('offset-should-be-consistant', () => {
+test('offset-should-be-consistant', (t) => {
   const s = spacetime('2019-03-13T18:00:00.000-05:00')
-  assert.equal(s.format('iso').slice(-6), '-05:00')
+  t.equal(s.format('iso').slice(-6), '-05:00')
+  t.end()
 })

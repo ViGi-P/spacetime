@@ -1,5 +1,4 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
 const right = [
@@ -32,80 +31,84 @@ const left = [
   'Etc/GMT+12' //-12
 ]
 
-test('test-date-line-at-180deg', () => {
+test('test-date-line-at-180deg', (t) => {
   let s = spacetime([2018, 2, 5, 0, 0, 0, 0], 'Europe/London')
   s = s.startOf('day')
-  assert.equal(s.time(), '12:00am', 'the first millisecond of the day')
-  assert.equal(s.timezone().current.offset, 0, 'start at 0 offset')
+  t.equal(s.time(), '12:00am', 'the first millisecond of the day')
+  t.equal(s.timezone().current.offset, 0, 'start at 0 offset')
   //everything to the right is today
   right.forEach((timezone) => {
     let d = s.clone()
     d = d.goto(timezone)
-    assert.equal(d.date(), 5, timezone + ' is today')
+    t.equal(d.date(), 5, timezone + ' is today')
   })
   //everything to the left is yesterday
   left.forEach((timezone) => {
     let d = s.clone()
     d = d.goto(timezone)
-    assert.equal(d.date(), 4, timezone + ' is yesterday')
+    t.equal(d.date(), 4, timezone + ' is yesterday')
   })
+  t.end()
 })
 
-test('test-date-line-at-0deg', () => {
+test('test-date-line-at-0deg', (t) => {
   let s = spacetime([2018, 2, 5, 0, 0, 0, 0], 'Europe/London')
   s = s.endOf('day')
-  assert.equal(s.time(), '11:59pm', 'the last millisecond of the day')
-  assert.equal(s.timezone().current.offset, 0, 'start at 0 offset')
+  t.equal(s.time(), '11:59pm', 'the last millisecond of the day')
+  t.equal(s.timezone().current.offset, 0, 'start at 0 offset')
   //everything to the right is tomorrow
   right.forEach((timezone) => {
     let d = s.clone()
     d = d.goto(timezone)
-    assert.equal(d.date(), 6, timezone + ' is tomorrow')
+    t.equal(d.date(), 6, timezone + ' is tomorrow')
   })
   //everything to the left is today
   left.forEach((timezone) => {
     let d = s.clone()
     d = d.goto(timezone)
-    assert.equal(d.date(), 5, timezone + ' is today')
+    t.equal(d.date(), 5, timezone + ' is today')
   })
+  t.end()
 })
 
-test('never cross the intl dateline moving right', () => {
+test('never cross the intl dateline moving right', (t) => {
   for (let h = 0; h < 24; h++) {
     //h ocklock on right side of the map
     const rightSide = spacetime([2022, 8, 24, h, 1], 'Pacific/Fiji')
     const time = h + ':01'
-    assert.equal(rightSide.format('time-24'), time, 'time is ' + time)
-    assert.equal(rightSide.date(), 24, 'date is 24th')
+    t.equal(rightSide.format('time-24'), time, 'time is ' + time)
+    t.equal(rightSide.date(), 24, 'date is 24th')
     //try move across dateline (to left side of the map)
     const leftSide = rightSide.clone().goto('Pacific/Midway')
-    assert.ok(leftSide.epoch === rightSide.epoch, 'we never actually moved')
+    t.ok(leftSide.epoch === rightSide.epoch, 'we never actually moved')
     //but...
     if (leftSide.date() === rightSide.date()) {
-      assert.ok(leftSide.hour() < rightSide.hour(), '.. but hour moved backward')
+      t.ok(leftSide.hour() < rightSide.hour(), '.. but hour moved backward')
     } else {
-      assert.ok(leftSide.date() + 1 === rightSide.date(), '..but date moved backward')
-      assert.ok(leftSide.hour() > rightSide.hour(), '..and hour moved < 24')
+      t.ok(leftSide.date() + 1 === rightSide.date(), '..but date moved backward')
+      t.ok(leftSide.hour() > rightSide.hour(), '..and hour moved < 24')
     }
   }
+  t.end()
 })
 
-test('never cross the intl dateline moving left', () => {
+test('never cross the intl dateline moving left', (t) => {
   for (let h = 0; h < 24; h++) {
     //h ocklock on right side of the map
     const rightSide = spacetime([2022, 8, 24, h, 1], 'Pacific/Midway')
     const time = h + ':01'
-    assert.equal(rightSide.format('time-24'), time, 'time is ' + time)
-    assert.equal(rightSide.date(), 24, 'date is 24th')
+    t.equal(rightSide.format('time-24'), time, 'time is ' + time)
+    t.equal(rightSide.date(), 24, 'date is 24th')
     //try move across dateline (to left side of the map)
     const leftSide = rightSide.clone().goto('Pacific/Fiji')
-    assert.ok(leftSide.epoch === rightSide.epoch, 'we never actually moved')
+    t.ok(leftSide.epoch === rightSide.epoch, 'we never actually moved')
     //but...
     if (leftSide.date() === rightSide.date()) {
-      assert.ok(leftSide.hour() > rightSide.hour(), '.. but hour moved forward')
+      t.ok(leftSide.hour() > rightSide.hour(), '.. but hour moved forward')
     } else {
-      assert.ok(leftSide.date() - 1 === rightSide.date(), '..but date moved forward')
-      assert.ok(leftSide.hour() <= rightSide.hour(), '..and hour moved < 24')
+      t.ok(leftSide.date() - 1 === rightSide.date(), '..but date moved forward')
+      t.ok(leftSide.hour() <= rightSide.hour(), '..and hour moved < 24')
     }
   }
+  t.end()
 })

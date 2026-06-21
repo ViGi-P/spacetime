@@ -1,5 +1,4 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
 const defaultSettings = {
@@ -39,13 +38,13 @@ const defaultSettings = {
   }
 }
 
-test('i18n useTitleCase is false', () => {
+test('i18n useTitleCase is false', (t) => {
   const a = spacetime([2000, 0, 1])
 
-  assert.equal(a.format('day-short'), 'Sat', 'en: day-short')
-  assert.equal(a.format('day'), 'Saturday', 'en: day')
-  assert.equal(a.format('month-short'), 'Jan', 'en: month-short')
-  assert.equal(a.format('month'), 'January', 'en: month')
+  t.equal(a.format('day-short'), 'Sat', 'en: day-short')
+  t.equal(a.format('day'), 'Saturday', 'en: day')
+  t.equal(a.format('month-short'), 'Jan', 'en: month-short')
+  t.equal(a.format('month'), 'January', 'en: month')
 
   a.i18n({
     days: {
@@ -72,23 +71,24 @@ test('i18n useTitleCase is false', () => {
     useTitleCase: false
   })
 
-  assert.equal(a.format('day-short'), 'sáb', 'es: day-short lowercase')
-  assert.equal(a.format('day'), 'sábado', 'es: day lowercase')
-  assert.equal(a.format('month-short'), 'ene', 'es: month-short lowercase')
-  assert.equal(a.format('month'), 'enero', 'es: month lowercase')
+  t.equal(a.format('day-short'), 'sáb', 'es: day-short lowercase')
+  t.equal(a.format('day'), 'sábado', 'es: day lowercase')
+  t.equal(a.format('month-short'), 'ene', 'es: month-short lowercase')
+  t.equal(a.format('month'), 'enero', 'es: month lowercase')
 
   //reset them, for the other tests
   a.i18n(defaultSettings)
 
+  t.end()
 })
 
-test('i18n', () => {
+test('i18n', (t) => {
   const a = spacetime([2000, 0, 1])
 
-  assert.equal(a.format('day-short'), 'Sat', 'en: day-short')
-  assert.equal(a.format('day'), 'Saturday', 'en: day')
-  assert.equal(a.format('month-short'), 'Jan', 'en: month-short')
-  assert.equal(a.format('month'), 'January', 'en: month')
+  t.equal(a.format('day-short'), 'Sat', 'en: day-short')
+  t.equal(a.format('day'), 'Saturday', 'en: day')
+  t.equal(a.format('month-short'), 'Jan', 'en: month-short')
+  t.equal(a.format('month'), 'January', 'en: month')
 
   a.i18n({
     days: {
@@ -118,14 +118,15 @@ test('i18n', () => {
     }
   })
 
-  assert.equal(a.format('day-short'), 'Sáb', 'es: day-short')
-  assert.equal(a.format('day'), 'Sábado', 'es: day')
-  assert.equal(a.format('month-short'), 'Ene', 'es: month-short')
-  assert.equal(a.format('month'), 'Enero', 'es: month')
+  t.equal(a.format('day-short'), 'Sáb', 'es: day-short')
+  t.equal(a.format('day'), 'Sábado', 'es: day')
+  t.equal(a.format('month-short'), 'Ene', 'es: month-short')
+  t.equal(a.format('month'), 'Enero', 'es: month')
 
-  assert.equal(a.format('time'), '12:00 a. m.', 'es: am')
+  t.equal(a.format('time'), '12:00 a. m.', 'es: am')
 
   //reset them, for the other tests
   a.i18n(defaultSettings)
 
+  t.end()
 })

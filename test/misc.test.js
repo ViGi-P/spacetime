@@ -1,97 +1,104 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
-test('isAwake', () => {
+test('isAwake', (t) => {
   let s = spacetime('March 26, 1999 13:42:00', 'Canada/Eastern')
-  assert.equal(s.isAwake(), true, 'awake')
+  t.equal(s.isAwake(), true, 'awake')
   s = spacetime('March 26, 1999 23:42:00', 'Canada/Eastern')
-  assert.equal(s.isAwake(), false, 'sleeping')
+  t.equal(s.isAwake(), false, 'sleeping')
+  t.end()
 })
 
-test('asleep-test', () => {
+test('asleep-test', (t) => {
   let s = spacetime.now()
   s = s.dayTime('night')
-  assert.equal(s.isAsleep(), true, 'sleeping at night')
+  t.equal(s.isAsleep(), true, 'sleeping at night')
   s = s.hour(2)
-  assert.equal(s.isAsleep(), true, 'sleeping at 2am')
+  t.equal(s.isAsleep(), true, 'sleeping at 2am')
   s = s.hour12(4)
-  assert.equal(s.isAsleep(), true, 'sleeping at 4am')
+  t.equal(s.isAsleep(), true, 'sleeping at 4am')
   s = s.dayTime('lunch')
-  assert.equal(s.isAsleep(), false, 'awake at lunch')
+  t.equal(s.isAsleep(), false, 'awake at lunch')
   s = s.hour24(14)
-  assert.equal(s.isAsleep(), false, 'awake at 2pm')
+  t.equal(s.isAsleep(), false, 'awake at 2pm')
   s = s.dayTime('evening')
-  assert.equal(s.isAsleep(), false, 'awake at evening')
+  t.equal(s.isAsleep(), false, 'awake at evening')
+  t.end()
 })
 
-test('named-dates', () => {
+test('named-dates', (t) => {
   const christmas = spacetime('christmas', 'Canada/Eastern')
   const newYears = spacetime('new years', 'Canada/Eastern')
-  assert.equal(christmas.isBefore(newYears), true, 'christmas-is-before-new-years')
+  t.equal(christmas.isBefore(newYears), true, 'christmas-is-before-new-years')
+  t.end()
 })
 
-test('nearest', () => {
+test('nearest', (t) => {
   let s = spacetime('Nov 2')
   s = s.nearest('month')
-  assert.equal(s.monthName(), 'november', 'nov')
-  assert.equal(s.date(), 1, 'nov 1')
+  t.equal(s.monthName(), 'november', 'nov')
+  t.equal(s.date(), 1, 'nov 1')
 
   s = spacetime('Nov 23')
   s = s.nearest('month')
-  assert.equal(s.monthName(), 'december', 'dec')
-  assert.equal(s.date(), 1, 'dec 1')
+  t.equal(s.monthName(), 'december', 'dec')
+  t.equal(s.date(), 1, 'dec 1')
+  t.end()
 })
 
-test('next', () => {
+test('next', (t) => {
   let s = spacetime('Nov 2')
   s = s.next('month')
-  assert.equal(s.monthName(), 'december', 'dec')
-  assert.equal(s.date(), 1, 'dec 1')
+  t.equal(s.monthName(), 'december', 'dec')
+  t.equal(s.date(), 1, 'dec 1')
 
   s = spacetime('Nov 23 1922')
   s = s.next('year')
-  assert.equal(s.monthName(), 'january', 'jan')
-  assert.equal(s.year(), 1923, 'now 1933')
+  t.equal(s.monthName(), 'january', 'jan')
+  t.equal(s.year(), 1923, 'now 1933')
 
   s = spacetime('Nov 23 1998')
   s = s.next('decade')
-  assert.equal(s.year(), 2000, 'now 2000')
-  assert.equal(s.monthName(), 'january', 'jan')
+  t.equal(s.year(), 2000, 'now 2000')
+  t.equal(s.monthName(), 'january', 'jan')
+  t.end()
 })
 
-test('last', () => {
+test('last', (t) => {
   let s = spacetime('Nov 2')
   s = s.last('month')
-  assert.equal(s.monthName(), 'october', 'oct')
-  assert.equal(s.date(), 1, 'oct 1')
+  t.equal(s.monthName(), 'october', 'oct')
+  t.equal(s.date(), 1, 'oct 1')
 
   s = spacetime('Nov 23 1922')
   s = s.last('year')
-  assert.equal(s.monthName(), 'january', 'jan')
-  assert.equal(s.year(), 1921, 'now 1921')
+  t.equal(s.monthName(), 'january', 'jan')
+  t.equal(s.year(), 1921, 'now 1921')
+  t.end()
 })
 
-test('offset', () => {
+test('offset', (t) => {
   let s = spacetime('Oct 12 2020', 'America/New_York')
-  assert.equal(s.offset(), -240, '-240 offset')
+  t.equal(s.offset(), -240, '-240 offset')
 
   s = spacetime('march 1 2020', 'America/New_York')
-  assert.equal(s.offset(), -300, '-300 offset')
+  t.equal(s.offset(), -300, '-300 offset')
+  t.end()
 })
 
-test('week number', () => {
+test('week number', (t) => {
   //TODO: these should pass
-  assert.equal(spacetime('jan 1st 2018').week(), 1, '2018 first week') //monday
-  assert.equal(spacetime('jan 9th 2018').week(), 2, '2018 second week') //tuesday
-  // assert.equal(spacetime('jan 15th 2018').week(), 3, '2018 third week') //monday
+  t.equal(spacetime('jan 1st 2018').week(), 1, '2018 first week') //monday
+  t.equal(spacetime('jan 9th 2018').week(), 2, '2018 second week') //tuesday
+  // t.equal(spacetime('jan 15th 2018').week(), 3, '2018 third week') //monday
 
-  assert.equal(spacetime('jan 1th 2019').week(), 1, '2019 first week') //tuesday
-  // assert.equal(spacetime('jan 9th 2019').week(), 2, '2019 second week') //wednesday
-  // assert.equal(spacetime('jan 15th 2019').week(), 3, '2019 third week') //tuesday
+  t.equal(spacetime('jan 1th 2019').week(), 1, '2019 first week') //tuesday
+  // t.equal(spacetime('jan 9th 2019').week(), 2, '2019 second week') //wednesday
+  // t.equal(spacetime('jan 15th 2019').week(), 3, '2019 third week') //tuesday
+  t.end()
 })
 
-test('json', () => {
+test('json', (t) => {
   const s = spacetime('2019-11-05T11:01:03.030-03:00')
   const json = s.format('json')
   const want = {
@@ -107,30 +114,34 @@ test('json', () => {
     millisecond: 30
   }
   Object.keys(want).forEach((k) => {
-    assert.equal(want[k], json[k], 'json-' + k)
+    t.equal(want[k], json[k], 'json-' + k)
   })
+  t.end()
 })
 
-test('set-time rollover dst', () => {
+test('set-time rollover dst', (t) => {
   const s = spacetime('6 October 2019', 'australia/sydney').time('4:20am')
-  assert.equal(s.date(), 6, 'still the 6th')
-  assert.equal(s.time(), '4:20am', 'correct time')
+  t.equal(s.date(), 6, 'still the 6th')
+  t.equal(s.time(), '4:20am', 'correct time')
+  t.end()
 })
 
-test('day aliases', () => {
+test('day aliases', (t) => {
   let s = spacetime().day('thurs')
-  assert.equal(s.format('day'), 'Thursday', 'thurs')
+  t.equal(s.format('day'), 'Thursday', 'thurs')
   s = spacetime().day('tues')
-  assert.equal(s.format('day'), 'Tuesday', 'tues')
+  t.equal(s.format('day'), 'Tuesday', 'tues')
+  t.end()
 })
-test('add fortnight', () => {
+test('add fortnight', (t) => {
   const s = spacetime()
   const a = s.clone().add(2, 'fortnight')
   const b = s.clone().add(4, 'weeks')
-  assert.equal(a.iso(), b.iso(), 'fortnight')
+  t.equal(a.iso(), b.iso(), 'fortnight')
+  t.end()
 })
 
-test('test floats as inputs', () => {
+test('test floats as inputs', (t) => {
   const num = 0.5
   let s = spacetime(null)
   s = s.date(num)
@@ -144,43 +155,48 @@ test('test floats as inputs', () => {
   s = s.add(num, 'years')
   s = s.add(num, 'months')
   s = s.minus(num, 'quarter')
-  assert.ok(!s.isEqual(spacetime.now()), 'float-input')
+  t.ok(!s.isEqual(spacetime.now()), 'float-input')
+  t.end()
 })
 
-test('apostrophe year', () => {
+test('apostrophe year', (t) => {
   let s = spacetime().year("'97").startOf('year')
-  assert.equal(s.format('iso-short'), '1997-01-01', "'97")
+  t.equal(s.format('iso-short'), '1997-01-01', "'97")
 
   s = spacetime().year("'13").startOf('year')
-  assert.equal(s.format('iso-short'), '2013-01-01', "'13")
+  t.equal(s.format('iso-short'), '2013-01-01', "'13")
 
   s = spacetime({ year: `'22`, month: 'feb' }).startOf('month')
-  assert.equal(s.format('iso-short'), '2022-02-01', 'apostrophe in object-input')
+  t.equal(s.format('iso-short'), '2022-02-01', 'apostrophe in object-input')
+  t.end()
 })
 
-test('weird inputs', () => {
+test('weird inputs', (t) => {
   const now = spacetime.now().add(1, 'millisecond')
   const isNull = spacetime(null)
-  assert.ok(isNull.isSame(now, 'hour'), 'null input')
+  t.ok(isNull.isSame(now, 'hour'), 'null input')
   const isUndefined = spacetime(undefined)
-  assert.ok(isUndefined.isSame(now, 'hour'), 'Undefined input')
+  t.ok(isUndefined.isSame(now, 'hour'), 'Undefined input')
   const isFalse = spacetime(false)
-  assert.ok(isFalse.isSame(now, 'hour'), 'isFalse input')
+  t.ok(isFalse.isSame(now, 'hour'), 'isFalse input')
   const isObj = spacetime({})
-  assert.ok(isObj.isSame(now, 'hour'), 'isObj input')
+  t.ok(isObj.isSame(now, 'hour'), 'isObj input')
   const isArr = spacetime([])
-  assert.ok(isArr.isSame(now, 'hour'), 'isArr input')
+  t.ok(isArr.isSame(now, 'hour'), 'isArr input')
+  t.end()
 })
 
-test('min < max', () => {
+test('min < max', (t) => {
   const min = spacetime.min('Canada/Pacific')
   const max = spacetime.max('Canada/Eastern')
-  assert.ok(min.isBefore(max), 'min < max')
+  t.ok(min.isBefore(max), 'min < max')
+  t.end()
 })
 
-test('subtract overflow', () => {
+test('subtract overflow', (t) => {
   const s = spacetime.now()
   const a = s.subtract(25, 'month');
   const b = s.subtract(13, 'month');
-  assert.ok(a.iso() !== b.iso(), 'subtractions not equal')
+  t.ok(a.iso() !== b.iso(), 'subtractions not equal')
+  t.end()
 })

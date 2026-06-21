@@ -1,92 +1,96 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
 const fmt = (s) => {
   return s.format('nice-short')
 }
 
-test('leapyear-basic', () => {
+test('leapyear-basic', (t) => {
   let d = spacetime('December 12, 2016 20:42:00', 'Africa/Algiers')
-  assert.equal(d.leapYear(), true, '2016-leap')
+  t.equal(d.leapYear(), true, '2016-leap')
 
   d = spacetime('April 12, 2020 10:42:00', 'Canada/Pacific')
-  assert.equal(d.leapYear(), true, '2020-leap')
+  t.equal(d.leapYear(), true, '2020-leap')
 
   d = spacetime('April 12, 2024 10:42:00', 'Canada/Eastern')
-  assert.equal(d.leapYear(), true, '2024-leap')
+  t.equal(d.leapYear(), true, '2024-leap')
 
   d = spacetime('April 12, 2018 10:42:00', 'Canada/Eastern')
-  assert.equal(d.leapYear(), false, '2018-not-leap')
+  t.equal(d.leapYear(), false, '2018-not-leap')
 
   d = spacetime('April 12, 2019 10:42:00', 'Canada/Pacific')
-  assert.equal(d.leapYear(), false, '2019-not-leap')
+  t.equal(d.leapYear(), false, '2019-not-leap')
 
   d = spacetime('April 12, 2023 10:42:00', 'Africa/Algiers')
-  assert.equal(d.leapYear(), false, '2023-not-leap')
+  t.equal(d.leapYear(), false, '2023-not-leap')
 
+  t.end()
 })
 
-test('leapyear-in-add', () => {
+test('leapyear-in-add', (t) => {
   let d = spacetime('December 1, 2000 20:42:00', 'Africa/Algiers')
   const first = d.clone()
 
   d = d.add(365, 'day')
-  assert.equal(d.leapYear(), false, 'not-leap-1')
-  assert.equal(fmt(first), fmt(d), 'same-day-1')
+  t.equal(d.leapYear(), false, 'not-leap-1')
+  t.equal(fmt(first), fmt(d), 'same-day-1')
 
   d = d.add(365, 'day')
-  assert.equal(d.leapYear(), false, 'not-leap-2')
-  assert.equal(fmt(first), fmt(d), 'same-day-2')
+  t.equal(d.leapYear(), false, 'not-leap-2')
+  t.equal(fmt(first), fmt(d), 'same-day-2')
 
   d = d.add(365, 'day')
-  assert.equal(d.leapYear(), false, 'not-leap-3')
-  assert.equal(fmt(first), fmt(d), 'same-day-3')
+  t.equal(d.leapYear(), false, 'not-leap-3')
+  t.equal(fmt(first), fmt(d), 'same-day-3')
 
   d = d.add(365, 'day')
-  assert.equal(d.leapYear(), true, 'leap-4')
-  assert.notEqual(fmt(first), fmt(d), 'same-day-4')
+  t.equal(d.leapYear(), true, 'leap-4')
+  t.notEqual(fmt(first), fmt(d), 'same-day-4')
 
+  t.end()
 })
 
-test('add-1-day-adds-25-hours', () => {
+test('add-1-day-adds-25-hours', (t) => {
   let d = spacetime(1509858000000, 'Canada/Eastern')
-  assert.equal(d.date(), 5, 'is 5th')
+  t.equal(d.date(), 5, 'is 5th')
   d = d.add(1, 'date')
-  assert.equal(d.date(), 6, 'now 6th')
+  t.equal(d.date(), 6, 'now 6th')
   d = d.add(1, 'date')
-  assert.equal(d.date(), 7, 'now 7th')
+  t.equal(d.date(), 7, 'now 7th')
+  t.end()
 })
 
-test('feb-29th-exists', () => {
+test('feb-29th-exists', (t) => {
   const leaps = [2004, 2008, 2012, 2016, 2020, 2024]
   leaps.forEach((y) => {
     //feb 28th 11:30pm
     let s = spacetime([y, 1, 28, 23, 30], 'Africa/Algiers')
     s = s.add(1, 'hour')
-    assert.equal(s.format('nice-short'), 'Feb 29th, 12:30am', 'forward into leapday on ' + y)
+    t.equal(s.format('nice-short'), 'Feb 29th, 12:30am', 'forward into leapday on ' + y)
     //march 1st 5:30pm
     s = spacetime([y, 2, 1, 17, 30], 'Canada/Mountain')
     s = s.subtract(1, 'day')
-    assert.equal(s.format('nice-short'), 'Feb 29th, 5:30pm', 'backward into leapday on ' + y)
+    t.equal(s.format('nice-short'), 'Feb 29th, 5:30pm', 'backward into leapday on ' + y)
   })
+  t.end()
 })
 
-test('feb-29th-doesnt-exist', () => {
+test('feb-29th-doesnt-exist', (t) => {
   const noLeaps = [2005, 2009, 2010, 2011, 2013, 2017, 2019, 2021]
   noLeaps.forEach((y) => {
     //feb 28th 11:30pm
     let s = spacetime([y, 1, 28, 23, 30], 'Africa/Algiers')
     s = s.add(1, 'hour')
-    assert.equal(s.format('nice-short'), 'Mar 1st, 12:30am', 'no leap on ' + y)
+    t.equal(s.format('nice-short'), 'Mar 1st, 12:30am', 'no leap on ' + y)
     //march 1st 5:30pm
     s = spacetime([y, 2, 1, 17, 30], 'Canada/Eastern')
     s = s.subtract(1, 'day')
-    assert.equal(s.format('nice-short'), 'Feb 28th, 5:30pm', 'backward with no leapday on ' + y)
+    t.equal(s.format('nice-short'), 'Feb 28th, 5:30pm', 'backward with no leapday on ' + y)
   })
+  t.end()
 })
 
-test('length of year', () => {
+test('length of year', (t) => {
   const right = {
     2014: 365,
     2015: 365,
@@ -109,22 +113,25 @@ test('length of year', () => {
     const s = spacetime({
       year
     }).endOf('year')
-    assert.equal(s.dayOfYear(), right[year], 'year ' + year)
+    t.equal(s.dayOfYear(), right[year], 'year ' + year)
   }
+  t.end()
 })
 
-test('set feb 29th in leap year', () => {
+test('set feb 29th in leap year', (t) => {
   let s = spacetime.now()
   s = s.year(2020)
   s = s.month(1)
   s = s.date(29)
-  assert.equal(s.format('iso-short'), '2020-02-29', 'is leap day')
+  t.equal(s.format('iso-short'), '2020-02-29', 'is leap day')
+  t.end()
 })
 
-test('set feb 29th in non-leap year', () => {
+test('set feb 29th in non-leap year', (t) => {
   let s = spacetime.now()
   s = s.year(2019)
   s = s.month(1)
   s = s.date(29)
-  assert.equal(s.format('iso-short'), '2019-02-28', 'is not leap day')
+  t.equal(s.format('iso-short'), '2019-02-28', 'is not leap day')
+  t.end()
 })

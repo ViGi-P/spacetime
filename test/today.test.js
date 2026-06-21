@@ -1,63 +1,68 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
-test('change assumed year', function () {
+test('change assumed year', function (t) {
   const today = {
     year: 1996
   }
   const s = spacetime('June 5th', null, { today: today })
-  assert.equal(s.format('nice-year'), 'Jun 5th, 1996', 'got year')
+  t.equal(s.format('nice-year'), 'Jun 5th, 1996', 'got year')
+  t.end()
 })
 
-test('change assumed month', function () {
+test('change assumed month', function (t) {
   const today = {
     month: 2
   }
   const s = spacetime('2019', null, { today: today })
-  assert.equal(s.format('nice-year'), 'Mar 1st, 2019', 'got month')
+  t.equal(s.format('nice-year'), 'Mar 1st, 2019', 'got month')
+  t.end()
 })
 
-test('change assumed date', function () {
+test('change assumed date', function (t) {
   const today = {
     date: 2
   }
   const s = spacetime('June 2020', null, { today: today })
-  assert.equal(s.format('nice-year'), 'Jun 2nd, 2020', 'got date')
+  t.equal(s.format('nice-year'), 'Jun 2nd, 2020', 'got date')
+  t.end()
 })
 
-test('null input w/ today', function () {
+test('null input w/ today', function (t) {
   let s = spacetime(null, null, { today: { year: 2012, month: 2 } })
-  assert.equal(s.format('nice-year'), 'Mar 1st, 2012', 'got date')
+  t.equal(s.format('nice-year'), 'Mar 1st, 2012', 'got date')
 
   s = spacetime('', 'Canada/Eastern', { today: { year: 1999, month: 0, date: 28 } })
-  assert.equal(s.format('nice-year'), 'Jan 28th, 1999', 'got date')
+  t.equal(s.format('nice-year'), 'Jan 28th, 1999', 'got date')
 
+  t.end()
 })
 
-test('today passthrough', function () {
+test('today passthrough', function (t) {
   let d = spacetime('03/02', '-2h', { today: { date: 21, month: 0, year: 2018 } })
-  assert.equal(d.iso(), '2018-03-02T00:00:00.000-02:00', '03/02')
+  t.equal(d.iso(), '2018-03-02T00:00:00.000-02:00', '03/02')
 
   d = spacetime('summer', '-2h', { today: { date: 21, month: 0, year: 2018 } })
-  assert.equal(d.iso(), '2018-06-01T00:00:00.000-02:00', 'summer')
+  t.equal(d.iso(), '2018-06-01T00:00:00.000-02:00', 'summer')
 
   d = spacetime('q2', '-2h', { today: { date: 21, month: 0, year: 2018 } })
-  assert.equal(d.iso(), '2018-04-01T00:00:00.000-02:00', 'q2')
+  t.equal(d.iso(), '2018-04-01T00:00:00.000-02:00', 'q2')
+  t.end()
 })
 
-test('today methods works', function () {
+test('today methods works', function (t) {
   const today = {
     date: 2,
     month: 'feb',
     year: 2012
   }
   let s = spacetime.now(null, { today: today })
-  assert.equal(s.format('nice-year'), 'Feb 2nd, 2012', 'now method')
+  t.equal(s.format('nice-year'), 'Feb 2nd, 2012', 'now method')
   s = spacetime.today(null, { today: today })
-  assert.equal(s.format('nice-year'), 'Feb 2nd, 2012', 'today method')
+  t.equal(s.format('nice-year'), 'Feb 2nd, 2012', 'today method')
   s = spacetime.tomorrow(null, { today: today })
-  assert.equal(s.format('nice-year'), 'Feb 3rd, 2012', 'tomorrow method')
+  t.equal(s.format('nice-year'), 'Feb 3rd, 2012', 'tomorrow method')
   s = spacetime.yesterday(null, { today: today })
-  assert.equal(s.format('nice-year'), 'Feb 1st, 2012', 'yesterday method')
+  t.equal(s.format('nice-year'), 'Feb 1st, 2012', 'yesterday method')
+  t.end()
 })

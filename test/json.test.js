@@ -1,8 +1,7 @@
-import { test } from 'node:test'
-import assert from './lib/assert.js'
+import test from 'tape'
 import spacetime from './lib/index.js'
 
-test('json in-out', () => {
+test('json in-out', (t) => {
   const arr = [
     '2011-12-03T10:15:30.003+01:00',
     '2011-12-03T10:15:30.003Z',
@@ -15,8 +14,9 @@ test('json in-out', () => {
     const a = spacetime(str)
     const json = a.json()
     const b = spacetime(json)
-    assert.equal(b.format('iso'), str, 'constr json' + str)
+    t.equal(b.format('iso'), str, 'constr json' + str)
     const c = spacetime.now().json(json)
-    assert.equal(c.format('iso'), str, 'json input' + str)
+    t.equal(c.format('iso'), str, 'json input' + str)
   })
+  t.end()
 })
