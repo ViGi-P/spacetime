@@ -1,7 +1,7 @@
 import monthLength from '../../data/monthLengths.js'
 import { isLeapYear } from '../../fns.js'
 
-const getMonthLength = function (month, year) {
+export const getMonthLength = function (month, year) {
   if (month === 1 && isLeapYear(year)) {
     return 29
   }

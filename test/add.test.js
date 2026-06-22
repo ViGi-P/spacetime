@@ -159,3 +159,12 @@ test('year-tricky', (t) => {
   t.equal(b.year(), 2015, 'year-last')
   t.end()
 })
+
+test('add/subtract month clamps to the leap-aware month length', (t) => {
+  t.equal(spacetime('2020-01-31').add(1, 'month').format('iso-short'), '2020-02-29', 'jan 31 + 1mo -> feb 29 (leap)')
+  t.equal(spacetime('2024-01-31').add(1, 'month').format('iso-short'), '2024-02-29', 'jan 31 + 1mo -> feb 29 (leap)')
+  t.equal(spacetime('2000-01-31').add(1, 'month').format('iso-short'), '2000-02-29', 'jan 31 + 1mo -> feb 29 (400-year leap)')
+  t.equal(spacetime('2021-01-31').add(1, 'month').format('iso-short'), '2021-02-28', 'jan 31 + 1mo -> feb 28 (common year)')
+  t.equal(spacetime('2020-03-31').subtract(1, 'month').format('iso-short'), '2020-02-29', 'mar 31 - 1mo -> feb 29 (leap)')
+  t.end()
+})
