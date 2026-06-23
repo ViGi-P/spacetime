@@ -1,6 +1,6 @@
 {
   "name": "spacetime",
-  "version": "7.12.1",
+  "version": "7.13.0",
   "description": "figure-out dates across timezones",
   "main": "src/index.js",
   "unpkg": "builds/spacetime.min.js",
@@ -56,17 +56,12 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
-    "@types/node": "25.9.1",
-    "@types/tape": "5.8.1",
     "eslint-plugin-regexp": "3.1.0",
-    "rollup": "4.60.4",
+    "rollup": "4.62.2",
     "shelljs": "0.10.0",
     "tap-dancer": "0.3.4",
-    "tape": "5.9.0",
-    "timekeeper": "2.3.1",
-    "tslib": "2.8.1",
-    "tsx": "4.22.3",
-    "typescript": "6.0.3"
+    "tape": "5.10.2",
+    "timekeeper": "2.3.1"
   },
   "license": "Apache-2.0"
 }

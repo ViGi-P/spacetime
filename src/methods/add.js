@@ -1,7 +1,6 @@
 import walkTo from './set/walk.js'
 import ms from '../data/milliseconds.js'
-import monthLength from '../data/monthLengths.js'
-import { months, daysBack, days } from './set/_model.js'
+import { months, daysBack, days, getMonthLength } from './set/_model.js'
 import { normalize } from '../fns.js'
 // this logic is a bit of a mess,
 // but briefly:
@@ -153,7 +152,8 @@ const addMethods = (SpaceTime) => {
     }
     //keep current date, unless the month doesn't have it.
     if (keepDate[unit]) {
-      const max = monthLength[want.month]
+      const year = want.year !== undefined ? want.year : old.year()
+      const max = getMonthLength(want.month, year)
       want.date = old.date()
       if (want.date > max) {
         want.date = max

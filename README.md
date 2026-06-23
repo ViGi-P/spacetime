@@ -54,7 +54,7 @@ let s = spacetime.now()
 s.diff(s.endOf('year'), 'days')
 // 292
 
-s.substract(11, 'hours').time()
+s.subtract(11, 'hours').time()
 // 6:50am
 
 s = s.goto('Europe/Paris')
@@ -122,6 +122,8 @@ d.format('nice')
 <div align="right">
   <a href="https://github.com/spencermountain/spacetime/wiki/Typescript">ts docs</a>
 </div>
+
+<sub><a href="./AGENTS.md"><code>AGENTS.md</code> LLM docs</a></sub>
 
 <img height="50px" src="https://user-images.githubusercontent.com/399657/68221862-17ceb980-ffb8-11e9-87d4-7b30b6488f16.png"/>
 
@@ -222,9 +224,9 @@ s.decade() // 2000
 s.century() // 21
 
 // Percentage-based information
-s.progress().month = 0.23 // We're a quarter way through the month
-s.progress().day = 0.48 // Almost noon
-s.progress().hour = 0.99 // 59 minutes and 59 seconds
+s.progress().month // 0.23 - we're a quarter way through the month
+s.progress().day // 0.48 - almost noon
+s.progress().hour // 0.99 - 59 minutes and 59 seconds
 
 // Add/subtract methods
 s = s.add(1, 'week')
@@ -547,7 +549,7 @@ s.i18n({
   },
   ampm: {
     am: ' a. m.',
-    pm: ' a. m.'
+    pm: ' p. m.'
   },
   distance: {
     past: 'past',

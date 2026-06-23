@@ -11,3 +11,11 @@ test('Spacetime base properties exist', (t: test.Test) => {
   t.ok(obj.timezones != undefined, '.timezones exists')
   t.end()
 })
+
+test('era getter/setter types', (t: test.Test) => {
+  const obj = spacetime.now()
+  const era: 'BC' | 'AD' = obj.era()
+  t.ok(era === 'BC' || era === 'AD', '.era() returns BC/AD')
+  t.equal(typeof obj.era('bc').epoch, 'number', '.era(value) returns a Spacetime')
+  t.end()
+})

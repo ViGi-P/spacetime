@@ -9,6 +9,13 @@ This project follows semVer, where:
 
  -->
 
+### 7.13.0 [Jun 2026]
+- **[fix]** - typescript config issue
+- **[fix]** - leap-year issue #461
+- **[update]** -  Chisinau + Vancouver dst hour
+- **[new]** - static LLM docs 
+- **[update]** - dependencies
+
 ### 7.12.1 [May 2026]
 - **[fix]** - regression for today param in object format
 - **[change]** - add npm ignore-scripts=true

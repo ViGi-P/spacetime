@@ -244,6 +244,11 @@ export interface Spacetime {
   /** set the name of the season, spring/summer/fall/autumn/winter */
   season(value: string, goForward?: boolean): Spacetime
 
+  /** get the era, 'BC' or 'AD' */
+  era(): 'BC' | 'AD'
+  /** set the era, 'BC' or 'AD' (flips the year between positive and negative) */
+  era(value: 'BC' | 'AD' | 'bc' | 'ad'): Spacetime
+
   /** get the hour + minute in decimal form, so '3:30am' is 3.5 */
   hourFloat(): number
   /** set the hour + minute in decimal form, so '3:30am' is 3.5 */
