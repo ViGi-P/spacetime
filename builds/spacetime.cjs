@@ -3866,7 +3866,8 @@
       }
       //keep current date, unless the month doesn't have it.
       if (keepDate[unit]) {
-        const max = monthLengths[want.month];
+        const year = want.year !== undefined ? want.year : old.year();
+        const max = getMonthLength(want.month, year);
         want.date = old.date();
         if (want.date > max) {
           want.date = max;

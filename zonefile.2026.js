@@ -797,7 +797,7 @@ export default {
   "america/vancouver": {
     "offset": -7,
     "hem": "n",
-    "dst": "03/08:02->11/01:02"
+    "dst": "03/08:02->11/01:03"
   },
   "america/whitehorse": {
     "offset": -7,
@@ -1362,7 +1362,7 @@ export default {
   "europe/chisinau": {
     "offset": 3,
     "hem": "n",
-    "dst": "03/29:02->10/25:03"
+    "dst": "03/29:03->10/25:04"
   },
   "europe/copenhagen": {
     "offset": 2,
